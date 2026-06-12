@@ -6,47 +6,113 @@ A full-stack E-Commerce web application built using the MERN stack that provides
 
 Features:
 
-User Features:
+# MERN E-Commerce Platform
 
-User Registration and Login
-JWT-based Authentication & Authorization
-Browse Products by Categories
-Featured Products Section
-Product Search and Filtering
-Shopping Cart Management
-Apply Discount Coupons
-Secure Stripe Checkout
-Order Creation and Management
+A full-stack E-Commerce web application built using the MERN stack that provides a seamless online shopping experience with secure authentication, product management, shopping cart functionality, coupon support, and Stripe payment integration.
 
-Admin Features:
+## Features
 
-1.Add New Products
-2.Manage Product Catalog
-3.Mark Products as Featured
-4.Monitor Orders and Transactions
-5.Analytics Dashboard
+### User Features
 
-Tech Stack::
+* User Registration and Login
+* JWT-based Authentication & Authorization
+* Browse Products by Categories
+* Featured Products Section
+* Product Search and Filtering
+* Shopping Cart Management
+* Apply Discount Coupons
+* Secure Stripe Checkout
+* Order Creation and Management
 
-Frontend:
+### Admin Features
 
-React.js
-Zustand (State Management)
-Tailwind CSS
-Axios
-Framer Motion
-React Router DOM
+* Add New Products
+* Manage Product Catalog
+* Mark Products as Featured
+* Monitor Orders and Transactions
+* Analytics Dashboard
 
-Backend:
+## Tech Stack
 
-Node.js
-Express.js
-MongoDB
-Mongoose
+### Frontend
 
-Additional Services:
+* React.js
+* Zustand (State Management)
+* Tailwind CSS
+* Axios
+* Framer Motion
+* React Router DOM
 
-Stripe Payment Gateway
-Redis Caching
-Cloudinary Image Storage
-JWT Authentication
+### Backend
+
+* Node.js
+* Express.js
+* MongoDB
+* Mongoose
+
+### Additional Services
+
+* Stripe Payment Gateway
+* Redis Caching
+* Cloudinary Image Storage
+* JWT Authentication
+
+## Key Functionalities
+
+### Authentication
+
+* Secure user signup and login
+* JWT token-based authorization
+* Protected routes for authenticated users
+
+### Product Management
+
+* Create, update, and manage products
+* Product categorization
+* Featured product functionality
+
+### Shopping Cart
+
+* Add products to cart
+* Update product quantities
+* Remove products from cart
+* Real-time cart total calculation
+
+### Payment Integration
+
+* Stripe Checkout Session Integration
+* Secure online payments
+* Automatic order creation after successful payment
+
+### Coupon System
+
+* Coupon validation
+* Discount calculations
+* Dynamic pricing updates
+
+## Database Collections
+
+### Users
+
+Stores user profile and authentication details.
+
+### Products
+
+Stores product information including:
+
+* Name
+* Description
+* Price
+* Category
+* Image
+* Featured Status
+
+### Orders
+
+Stores:
+
+* User Information
+* Purchased Products
+* Order Amount
+* Payment Session Details
+
