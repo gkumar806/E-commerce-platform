@@ -6,16 +6,17 @@ A full-stack E-Commerce web application built using the MERN stack that provides
 
 Features:
 
-1.User Features
-2.User Registration and Login
-3.JWT-based Authentication & Authorization
-4.Browse Products by Categories
-5.Featured Products Section
-6.Product Search and Filtering
-7.Shopping Cart Management
-8.Apply Discount Coupons
-9.Secure Stripe Checkout
-10.Order Creation and Management
+User Features:
+
+User Registration and Login
+JWT-based Authentication & Authorization
+Browse Products by Categories
+Featured Products Section
+Product Search and Filtering
+Shopping Cart Management
+Apply Discount Coupons
+Secure Stripe Checkout
+Order Creation and Management
 
 Admin Features:
 
