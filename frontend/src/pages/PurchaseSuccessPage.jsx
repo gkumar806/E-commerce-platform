@@ -1,24 +1,32 @@
-import { ArrowRight, CheckCircle, HandHeart } from "lucide-react";
+import { ArrowRight, CheckCircle, HandHeart, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCartStore } from "../stores/useCartStore";
+import { useAddressStore } from "../stores/useAddressStore";
 import axios from "../lib/axios";
 import Confetti from "react-confetti";
+import LoadingSpinner from "../components/LoadingSpinner";
+import { formatAddressLines } from "../lib/addressUtils";
 
 const PurchaseSuccessPage = () => {
 	const [isProcessing, setIsProcessing] = useState(true);
 	const { clearCart } = useCartStore();
+	const { clearSelectedAddress } = useAddressStore();
 	const [error, setError] = useState(null);
+	const [order, setOrder] = useState(null);
 
 	useEffect(() => {
 		const handleCheckoutSuccess = async (sessionId) => {
 			try {
-				await axios.post("/payments/checkout-success", {
+				const res = await axios.post("/payments/checkout-success", {
 					sessionId,
 				});
+				setOrder(res.data.order);
 				clearCart();
-			} catch (error) {
-				console.log(error);
+				clearSelectedAddress();
+			} catch (err) {
+				console.log(err);
+				setError(err.response?.data?.message || "Failed to confirm order");
 			} finally {
 				setIsProcessing(false);
 			}
@@ -31,11 +39,25 @@ const PurchaseSuccessPage = () => {
 			setIsProcessing(false);
 			setError("No session ID found in the URL");
 		}
-	}, [clearCart]);
+	}, [clearCart, clearSelectedAddress]);
 
-	if (isProcessing) return "Processing...";
+	if (isProcessing) return <LoadingSpinner />;
 
-	if (error) return `Error: ${error}`;
+	if (error) {
+		return (
+			<div className='flex h-screen items-center justify-center px-4'>
+				<div className='max-w-md w-full rounded-lg bg-gray-800 p-6 text-center'>
+					<p className='text-red-400'>{error}</p>
+					<Link to='/' className='mt-4 inline-block text-emerald-400 hover:text-emerald-300'>
+						Go Home
+					</Link>
+				</div>
+			</div>
+		);
+	}
+
+	const shippingAddress = order?.shippingAddress;
+	const addressLines = formatAddressLines(shippingAddress);
 
 	return (
 		<div className='h-screen flex items-center justify-center px-4'>
@@ -54,23 +76,40 @@ const PurchaseSuccessPage = () => {
 						<CheckCircle className='text-emerald-400 w-16 h-16 mb-4' />
 					</div>
 					<h1 className='text-2xl sm:text-3xl font-bold text-center text-emerald-400 mb-2'>
-						Purchase Successful!
+						Order Successfully Placed
 					</h1>
 
-					<p className='text-gray-300 text-center mb-2'>
+					<p className='text-gray-300 text-center mb-6'>
 						Thank you for your order. {"We're"} processing it now.
 					</p>
-					<p className='text-emerald-400 text-center text-sm mb-6'>
-						Check your email for order details and updates.
-					</p>
-					<div className='bg-gray-700 rounded-lg p-4 mb-6'>
-						<div className='flex items-center justify-between mb-2'>
-							<span className='text-sm text-gray-400'>Order number</span>
-							<span className='text-sm font-semibold text-emerald-400'>#12345</span>
+
+					{shippingAddress && (
+						<div className='bg-gray-700 rounded-lg p-4 mb-4'>
+							<div className='flex items-center gap-2 mb-2 text-emerald-400'>
+								<MapPin className='h-4 w-4' />
+								<span className='text-sm font-semibold'>Delivering To:</span>
+							</div>
+							<p className='font-medium text-white'>{shippingAddress.fullName}</p>
+							<div className='mt-1 space-y-0.5 text-sm text-gray-300'>
+								{addressLines.map((line) => (
+									<p key={line}>{line}</p>
+								))}
+							</div>
 						</div>
+					)}
+
+					<div className='bg-gray-700 rounded-lg p-4 mb-6'>
+						{order?._id && (
+							<div className='flex items-center justify-between mb-2'>
+								<span className='text-sm text-gray-400'>Order number</span>
+								<span className='text-sm font-semibold text-emerald-400'>
+									#{order._id.slice(-6).toUpperCase()}
+								</span>
+							</div>
+						)}
 						<div className='flex items-center justify-between'>
 							<span className='text-sm text-gray-400'>Estimated delivery</span>
-							<span className='text-sm font-semibold text-emerald-400'>3-5 business days</span>
+							<span className='text-sm font-semibold text-emerald-400'>3–5 Days</span>
 						</div>
 					</div>
 
@@ -83,8 +122,8 @@ const PurchaseSuccessPage = () => {
 							Thanks for trusting us!
 						</button>
 						<Link
-							to={"/"}
-							className='w-full bg-gray-700 hover:bg-gray-600 text-emerald-400 font-bold py-2 px-4 
+							to='/'
+							className='w-full bg-gray-700 hover:bg-gray-600 text-emerald-400 font-bold py-2 px-4
             rounded-lg transition duration-300 flex items-center justify-center'
 						>
 							Continue Shopping

@@ -2,12 +2,38 @@ import Coupon from "../models/coupon.model.js";
 import Order from "../models/order.model.js";
 import { stripe } from "../lib/stripe.js";
 
+const validateShippingAddress = (shippingAddress) => {
+	if (!shippingAddress) return "Shipping address is required";
+
+	const requiredFields = ["fullName", "phone", "houseNo", "street", "city", "state", "pincode"];
+	for (const field of requiredFields) {
+		if (!shippingAddress[field]?.trim()) {
+			return `${field} is required in shipping address`;
+		}
+	}
+
+	if (!/^\d{10}$/.test(shippingAddress.phone.trim())) {
+		return "Mobile number must be exactly 10 digits";
+	}
+
+	if (!/^\d{6}$/.test(shippingAddress.pincode.trim())) {
+		return "PIN code must be exactly 6 digits";
+	}
+
+	return null;
+};
+
 export const createCheckoutSession = async (req, res) => {
 	try {
-		const { products, couponCode,shippingAddress } = req.body;
+		const { products, couponCode, shippingAddress } = req.body;
 
 		if (!Array.isArray(products) || products.length === 0) {
 			return res.status(400).json({ error: "Invalid or empty products array" });
+		}
+
+		const addressError = validateShippingAddress(shippingAddress);
+		if (addressError) {
+			return res.status(400).json({ message: addressError });
 		}
 
 		let totalAmount = 0;
@@ -142,7 +168,15 @@ export const checkoutSuccess = async (req, res) => {
 				success: true,
 				message: "Payment successful, order created, and coupon deactivated if used.",
 				orderId: newOrder._id,
+				order: {
+					_id: newOrder._id,
+					totalAmount: newOrder.totalAmount,
+					shippingAddress: newOrder.shippingAddress,
+					createdAt: newOrder.createdAt,
+				},
 			});
+		} else {
+			res.status(400).json({ message: "Payment not completed" });
 		}
 	} catch (error) {
 		console.error("Error processing successful checkout:", error);

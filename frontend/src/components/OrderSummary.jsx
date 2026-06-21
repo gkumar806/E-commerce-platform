@@ -1,49 +1,19 @@
 import { motion } from "framer-motion";
 import { useCartStore } from "../stores/useCartStore";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MoveRight } from "lucide-react";
-import { loadStripe } from "@stripe/stripe-js";
-import axios from "../lib/axios";
-
-const stripePromise = loadStripe(
-	"pk_test_51ThNRm19s2Dd8NSjVsCAqrWwxlSJLSyTlpt1CTSg18JlRSuIqLFCSzDQ7KEC9eLvdIvPsjyxCW7iki5KwjfqEy1N00yGubXvlN"
-);
 
 const OrderSummary = () => {
-	const { total, subtotal, coupon, isCouponApplied, cart } = useCartStore();
+	const navigate = useNavigate();
+	const { total, subtotal, coupon, isCouponApplied } = useCartStore();
 
 	const savings = subtotal - total;
 	const formattedSubtotal = subtotal.toFixed(2);
 	const formattedTotal = total.toFixed(2);
 	const formattedSavings = savings.toFixed(2);
 
-	const handlePayment = async () => {
-		const stripe = await stripePromise;
-		const shippingAddress = {
-		fullName: "Gaurav Kumar",
-		phone: "9999999999",
-		addressLine1: "House No. 123",
-		addressLine2: "",
-		city: "Ghaziabad",
-		state: "Uttar Pradesh",
-		pincode: "201001",
-		country: "India",
-	};
-
-		const res = await axios.post("/payments/create-checkout-session", {
-	products: cart,
-	couponCode: coupon ? coupon.code : null,
-	shippingAddress,
-});
-
-		const session = res.data;
-		const result = await stripe.redirectToCheckout({
-			sessionId: session.id,
-		});
-
-		if (result.error) {
-			console.error("Error:", result.error);
-		}
+	const handleProceedToCheckout = () => {
+		navigate("/shipping-address");
 	};
 
 	return (
@@ -85,7 +55,7 @@ const OrderSummary = () => {
 					className='flex w-full items-center justify-center rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-300'
 					whileHover={{ scale: 1.05 }}
 					whileTap={{ scale: 0.95 }}
-					onClick={handlePayment}
+					onClick={handleProceedToCheckout}
 				>
 					Proceed to Checkout
 				</motion.button>

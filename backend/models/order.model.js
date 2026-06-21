@@ -87,11 +87,15 @@ const orderSchema = new mongoose.Schema(
 				type: String,
 				required: true,
 			},
-			addressLine1: {
+			houseNo: {
 				type: String,
 				required: true,
 			},
-			addressLine2: {
+			street: {
+				type: String,
+				required: true,
+			},
+			landmark: {
 				type: String,
 				default: "",
 			},

@@ -1,4 +1,4 @@
-import { ShoppingCart, UserPlus, LogIn, LogOut, Lock } from "lucide-react";
+import { ShoppingCart, UserPlus, LogIn, LogOut, Lock, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useUserStore } from "../stores/useUserStore";
 import { useCartStore } from "../stores/useCartStore";
@@ -54,7 +54,15 @@ const Navbar = () => {
 						)}
 
 						{user ? (
-							<button
+							<>
+								<Link
+									to='/profile'
+									className='text-gray-300 hover:text-emerald-400 transition duration-300 ease-in-out flex items-center gap-1'
+								>
+									<User className='inline-block' size={20} />
+									<span className='hidden sm:inline'>Profile</span>
+								</Link>
+								<button
 								className='bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 
 						rounded-md flex items-center transition duration-300 ease-in-out'
 								onClick={logout}
@@ -62,6 +70,7 @@ const Navbar = () => {
 								<LogOut size={18} />
 								<span className='hidden sm:inline ml-2'>Log Out</span>
 							</button>
+							</>
 						) : (
 							<>
 								<Link
